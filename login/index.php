@@ -1,21 +1,20 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'] . '/src/core.php';
-include $_SERVER['DOCUMENT_ROOT'] . '/data/users.php';
-include $_SERVER['DOCUMENT_ROOT'] . '/data/passwords.php';
-
+require $_SERVER['DOCUMENT_ROOT'] . '/src/core.php';
 
 $authSuccess = false;
 $authError = false;
-$authFormSend = false;
+$isAuthorized = false;
 $inputEmail = '';
 $inputPass = '';
 
 if (! empty($_POST)) {
+    require $_SERVER['DOCUMENT_ROOT'] . '/data/users.php';
+    require $_SERVER['DOCUMENT_ROOT'] . '/data/passwords.php';
 
     $inputEmail = $_POST['email'];
     $inputPass = $_POST['password'];
-    $authFormSend = true;
+    $isAuthorized = true;
     $emailIndex = array_search($inputEmail, $emails);
     if ($emailIndex !== false && $inputPass == $passwords[$emailIndex]) {
         $authSuccess = true;
@@ -88,9 +87,9 @@ if (! empty($_POST)) {
         <div class="py-4 pb-8">
             <h1 class="text-black text-3xl font-bold mb-4">Авторизация</h1>
 
-            <?php if ($authFormSend && $authSuccess) {
+            <?php if ($isAuthorized && $authSuccess) {
                 echo includeTemplate('messages/success_message.php', ['message' => 'Все прошло успешно']);
-            } elseif ($authFormSend && $authError) {
+            } elseif ($isAuthorized && $authError) {
                 echo includeTemplate('messages/error_message.php', ['message' => 'Неверный email или пароль']);
             }?>
 
@@ -99,11 +98,11 @@ if (! empty($_POST)) {
                     <div class="grid grid-cols-1 gap-6">
                         <div class="block">
                             <label for="fieldEmail" class="text-gray-700 font-bold">Email</label>
-                            <input id="fieldEmail"  value="<?=($authFormSend && $authError) ? $inputEmail : ''?>" name="email" type="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="john@example.com">
+                            <input id="fieldEmail"  value="<?=($isAuthorized && $authError) ? $inputEmail : ''?>" name="email" type="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="john@example.com">
                         </div>
                         <div class="block">
                             <label for="fieldPassword" class="text-gray-700 font-bold">Пароль</label>
-                            <input id="fieldPassword" value="<?=($authFormSend && $authError) ? $inputPass : ''?>" name="password" type="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="******">
+                            <input id="fieldPassword" value="<?=($isAuthorized && $authError) ? $inputPass : ''?>" name="password" type="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="******">
                         </div>
                         <div class="block">
                             <button type="submit" class="inline-block bg-orange hover:bg-opacity-70 focus:outline-none text-white font-bold py-2 px-4 rounded">
