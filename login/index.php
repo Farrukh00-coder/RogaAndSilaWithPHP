@@ -31,10 +31,10 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/templates/header.php';
         <div class="py-4 pb-8">
             <h1 class="text-black text-3xl font-bold mb-4">Авторизация</h1>
 
-            <?php if ($isAuthorized && $authSuccess) {
-                echo includeTemplate('messages/success_message.php', ['message' => 'Все прошло успешно']);
-            } elseif ($isAuthorized && $authError) {
-                echo includeTemplate('messages/error_message.php', ['message' => 'Неверный email или пароль']);
+            <?php if ($isAuthorized && $authSuccess) {?>
+                <?php includeTemplate('messages/success_message.php', ['message' => 'Все прошло успешно']);
+            } elseif ($isAuthorized && $authError) {?>
+                <?php includeTemplate('messages/error_message.php', ['message' => 'Неверный email или пароль']);
             }?>
 
             <form action="/login/" method="POST">
