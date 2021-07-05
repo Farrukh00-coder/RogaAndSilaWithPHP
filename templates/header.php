@@ -49,7 +49,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/src/core.php';
         <div class="border-b">
             <div class="container mx-auto overflow-hidden px-4 sm:px-6">
                 <section class="bg-white py-4">
-                    <?=includeTemplate('/menu.php', getMenu())?>
+                    <?php includeTemplate('/menu.php', getMenu());?>
                 </section>
             </div>
         </div>
