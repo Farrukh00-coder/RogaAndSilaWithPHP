@@ -1,6 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/templates/header.php';
 $cars = getCars();
+if (isset($_SESSION['user_name'])) {
 ?>
 <main class="flex-1 container mx-auto bg-white overflow-hidden px-4 sm:px-6">
     <div class="py-4 pb-8">
@@ -11,4 +12,7 @@ $cars = getCars();
 
 <?php
 require $_SERVER['DOCUMENT_ROOT'] . '/templates/footer.php';
+} else {
+	header('Location: /login/');
+}
 ?>
