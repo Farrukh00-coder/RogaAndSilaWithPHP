@@ -1,6 +1,6 @@
 <?php
 
-$menu = getSortMenu($data);
+$menu = getMenu();
 
 ?>
 <ul class="list-inside bullet-list-item flex flex-wrap justify-between -mx-5 -my-2">

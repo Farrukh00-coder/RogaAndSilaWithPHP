@@ -17,20 +17,18 @@ if (! empty($_POST)) {
     $emailIndex = array_search($inputEmail, $emails);
     if ($emailIndex !== false && $inputPass == $passwords[$emailIndex]) {
         $authSuccess = true;
+        $_SESSION['isAuth'] = true;
+        $_SESSION['user_name'] = $inputEmail;
+        //при успешной авторизации создаем куку с длительностью 1 месяц
+        setcookie('email', $inputEmail, time() + 3600*24*30, "/");
     } else {
         $authError = true;
     }    
 }
-
-if ($authSuccess) {
-    $_SESSION['isAuth'] = true;
-    $_SESSION['user_name'] = $inputEmail;
-    // if (! isset($_COOKIE['email'])) {
-    //     //при успешной авторизации создаем куку с длительностью 1 месяц
-    //     setcookie('email', $inputEmail, time() + 3600*24*30, "/");
-    // }
-    //при успешной авторизации создаем куку с длительностью 1 месяц
-    setcookie('email', $inputEmail, time() + 3600*24*30, "/");
+if (isset($_SESSION['isAuth']) && $_SESSION['isAuth']) {
+    if ($isAuthorized) {
+        header("Location: /login/?login=yes");
+    }
 }
 ?>
 
@@ -38,14 +36,13 @@ if ($authSuccess) {
         <div class="py-4 pb-8">
             <h1 class="text-black text-3xl font-bold mb-4">Авторизация</h1>
             <?php if (isset($_SESSION['isAuth']) && $_SESSION['isAuth']) {
-                if ($isAuthorized) {
-                    header("Location: /login/?login=yes");
-                }
+                // if ($isAuthorized) {
+                //     header("Location: /login/?login=yes");
+                // }
                 includeTemplate('messages/success_message.php', ['message' => 'Все прошло успешно']);
             } else {
-
-             if ($isAuthorized && $authError) {
-                includeTemplate('messages/error_message.php', ['message' => 'Неверный email или пароль']);
+                if ($isAuthorized && $authError) {
+                    includeTemplate('messages/error_message.php', ['message' => 'Неверный email или пароль']);
             }?>
 
             <form action="/login/" method="POST">

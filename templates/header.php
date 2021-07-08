@@ -1,6 +1,11 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'] . '/src/core.php';
 
+// продлеваем жизнь куки
+if (isset($_SESSION['isAuth']) && $_SESSION['isAuth'] === true && isset($_COOKIE['email'])) {
+    setcookie('email', $_COOKIE['email'], time() + 3600*24*30, "/");
+}
+
 if (isset($_GET['login']) && $_GET['login'] == 'no') {
     $_SESSION = [];
     session_destroy();
@@ -44,7 +49,7 @@ if (isset($_GET['login']) && $_GET['login'] == 'no') {
         <div class="border-b">
             <div class="container mx-auto overflow-hidden px-4 sm:px-6">
                 <section class="bg-white py-4">
-                    <?php includeTemplate('/menu.php', getMenu());?>
+                    <?php includeTemplate('/menu.php');?>
                 </section>
             </div>
         </div>
