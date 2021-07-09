@@ -11,6 +11,8 @@ if (isset($_GET['login']) && $_GET['login'] == 'no') {
     session_destroy();
     header("Location: /");
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -49,7 +51,7 @@ if (isset($_GET['login']) && $_GET['login'] == 'no') {
         <div class="border-b">
             <div class="container mx-auto overflow-hidden px-4 sm:px-6">
                 <section class="bg-white py-4">
-                    <?php includeTemplate('/menu.php');?>
+                    <?php includeTemplate('/menu.php', getMenu());?>
                 </section>
             </div>
         </div>

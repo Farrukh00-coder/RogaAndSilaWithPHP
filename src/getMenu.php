@@ -30,13 +30,6 @@ function getMenu() : array
 	}
 
 	$menu = arraySort($menu, 'sort', SORT_ASC);
-	foreach ($menu as $key => $section) {
-		if (mb_strlen($section['title']) > 15) {
-			$menu[$key]['title'] = cutString($section['title'], 12, '...');
-		} else {
-			$menu[$key]['title'] = $section['title'];
-		}
-	}
 
 	return $menu;
 }
