@@ -1,29 +1,36 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/templates/header.php';
 
+if (isset($_SESSION['user_name'])) {
+    header('Location: /profile/');
+}
+
+
 $authSuccess = false;
 $authError = false;
 $isAuthorized = false;
-$inputEmail = '';
-$inputPass = '';
+
 
 if (! empty($_POST)) {
-    require $_SERVER['DOCUMENT_ROOT'] . '/data/users.php';
-    require $_SERVER['DOCUMENT_ROOT'] . '/data/passwords.php';
-
-    $inputEmail = $_POST['email'];
-    $inputPass = $_POST['password'];
     $isAuthorized = true;
-    $emailIndex = array_search($inputEmail, $emails);
-    if ($emailIndex !== false && $inputPass == $passwords[$emailIndex]) {
+    // подключение к базе данных
+    $connection = getConnection();
+    // экранируем mail
+    $email = mysqli_real_escape_string($connection, $_POST['email']);
+    // если есть пользователь с mail из формы, то выбираем его с полями id и password
+    $user = mysqli_fetch_assoc(mysqli_query($connection, "SELECT `id`, `password` FROM `users` WHERE `email`='{$email}' LIMIT 1"));
+
+    if ($user && password_verify($_POST['password'], $user['password'])) {
         $authSuccess = true;
         $_SESSION['isAuth'] = true;
-        $_SESSION['user_name'] = $inputEmail;
+        $_SESSION['user_name'] = $_POST['email'];
+        $_SESSION['id'] = $user['id'];
         //при успешной авторизации создаем куку с длительностью 1 месяц
-        setcookie('email', $inputEmail, time() + 3600*24*30, "/");
+        setcookie('email', $_POST['email'], time() + 3600*24*30, "/");
     } else {
         $authError = true;
-    }    
+    }
+
 }
 if (isset($_SESSION['isAuth']) && $_SESSION['isAuth']) {
     if ($isAuthorized) {
@@ -36,9 +43,6 @@ if (isset($_SESSION['isAuth']) && $_SESSION['isAuth']) {
         <div class="py-4 pb-8">
             <h1 class="text-black text-3xl font-bold mb-4">Авторизация</h1>
             <?php if (isset($_SESSION['isAuth']) && $_SESSION['isAuth']) {
-                // if ($isAuthorized) {
-                //     header("Location: /login/?login=yes");
-                // }
                 includeTemplate('messages/success_message.php', ['message' => 'Все прошло успешно']);
             } else {
                 if ($isAuthorized && $authError) {
@@ -54,7 +58,7 @@ if (isset($_SESSION['isAuth']) && $_SESSION['isAuth']) {
                         </div>
                         <div class="block">
                             <label for="fieldPassword" class="text-gray-700 font-bold">Пароль</label>
-                            <input id="fieldPassword" value="<?=($isAuthorized && $authError) ? $inputPass : ''?>" name="password" type="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="******">
+                            <input id="fieldPassword" value="<?=($isAuthorized && $authError) ? $_POST['password'] : ''?>" name="password" type="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="******">
                         </div>
                         <div class="block">
                             <button type="submit" class="inline-block bg-orange hover:bg-opacity-70 focus:outline-none text-white font-bold py-2 px-4 rounded">
