@@ -1,17 +1,11 @@
 <?php
-
-function getMenu(): array
+function getMenu() : array
 {
 	$menu = [
 		[
 			'title' => 'Главная',
 			'path' => '/',
 			'sort' => 3,
-		],
-		[
-			'title' => 'Каталог',
-			'path' => '/catalog/',
-			'sort' => 10,
 		],
 		[
 			'title' => 'Распродажа',
@@ -29,6 +23,13 @@ function getMenu(): array
 			'sort' => 6,
 		],
 	];
+
+
+	if(isset($_SESSION['isAuth'])) {
+		array_push($menu, ['title' => 'Каталог', 'path' => '/catalog/', 'sort' => 10,]);
+	}
+
+	$menu = arraySort($menu, 'sort', SORT_ASC);
 
 	return $menu;
 }
